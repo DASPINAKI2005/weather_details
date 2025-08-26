@@ -35,7 +35,7 @@ A modern, responsive weather dashboard that provides real-time weather data and 
 
 ## 🚀 Live Demo
 
-Open `index.html` in your browser to start using the weather dashboard immediately.
+Open https://weather-details-webapp.netlify.app/ to see live 
 
 ## 🛠️ Technology Stack
 
@@ -189,3 +189,4 @@ This project is open source and available under the [MIT License](LICENSE).
 ---
 
 **Professional Weather Dashboard** - Your reliable companion for accurate weather information worldwide.
+
