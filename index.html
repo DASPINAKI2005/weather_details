@@ -3,177 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Weather Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Professional Weather Dashboard</h1>
-            <p>Real-time weather data and forecasts for any location worldwide</p>
-            
+    <title>WeatherFlow - Advanced Weather Dashboard</title>
+    <link rel="icon" type="image/jpeg" href="Weather Icon.jpg" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <head>
+<body data-theme="dark">
+    <div class="dashboard">
+        <aside class="sidebar">
             <div class="search-container">
-                <input type="text" id="city-input" placeholder="Enter city name (e.g., New York, London, Tokyo)">
-                <button id="city-input-btn">
-                    <i class="fas fa-search"></i> Search
-                </button>
+                <input type="text" class="search-input" placeholder="Search for a city..." id="citySearch">
+                <button class="search-btn" id="searchBtn">🔍</button>
+                <div class="suggestions" id="suggestions"></div>
             </div>
-        </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Fetching real-time weather data...</p>
-        </div>
+            <div class="favorites" id="favoritesSection">
+                <h3>Favorite Locations</h3>
+                <div id="favoritesList"></div>
+            </div>
 
-        <div class="dashboard" id="dashboard">
-            <div class="card current-weather">
-                <div class="location-info">
-                    <div class="location-text">
-                        <h2 id="city-name">Kolkata , India</h2>
-                        <p id="date">Thursday, June 20, 2024</p>
-                    </div>
-                    <div class="real-time" id="real-time">10:30:15 AM</div>
+            <div class="air-quality-card" id="airQualityCard">
+                <h3>Air Quality Index</h3>
+                <div class="loading" id="aqiLoading">
+                    <div class="spinner"></div>
+                    Loading AQI...
                 </div>
-                
-                <div class="weather-main">
-                    <div class="temperature" id="temperature">24°C</div>
-                    <div class="weather-icon-container">
-                        <i class="weather-icon-large fas fa-sun"></i>
-                        <div class="weather-desc" id="description">Clear Sky</div>
-                    </div>
+                <div id="aqiContent" style="display: none;">
+                    <div class="aqi-value" id="aqiValue">--</div>
+                    <div class="aqi-description" id="aqiDescription">--</div>
+                    <div class="pollutant-details" id="pollutantDetails"></div>
                 </div>
-                
-                <div class="weather-details">
-                    <div class="detail-card">
-                        <div class="detail-icon">
-                            <i class="fas fa-wind"></i>
-                        </div>
-                        <div class="detail-info">
-                            <h3>Wind Speed</h3>
-                            <p id="wind-speed">5.2 m/s</p>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-card">
-                        <div class="detail-icon">
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                        <div class="detail-info">
-                            <h3>Pressure</h3>
-                            <p id="pressure">1015 hPa</p>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-card">
-                        <div class="detail-icon">
-                            <i class="fas fa-sun"></i>
-                        </div>
-                        <div class="detail-info">
-                            <h3>Sunrise</h3>
-                            <p id="sunrise">5:42 AM</p>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-card">
-                        <div class="detail-icon">
-                            <i class="fas fa-moon"></i>
-                        </div>
-                        <div class="detail-info">
-                            <h3>Sunset</h3>
-                            <p id="sunset">8:18 PM</p>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-card">
-                        <div class="detail-icon">
-                            <i class="fas fa-cloud-rain"></i>
-                        </div>
-                        <div class="detail-info">
-                            <h3>Rain Chance</h3>
-                            <p id="rain-chance">15%</p>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-card">
-                        <div class="detail-icon">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <div class="detail-info">
-                            <h3>Humidity</h3>
-                            <p id="humidity">65%</p>
-                        </div>
+            </div>
+
+            <div class="historical-data">
+                <h3>Historical Weather</h3>
+                <div class="date-selector">
+                    <input type="date" class="date-input" id="historicalDate">
+                    <button class="btn btn-secondary" id="fetchHistoricalBtn">View</button>
+                </div>
+                <div id="historicalContent"></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="logo">⛈️ WeatherFlow</div>
+                <div class="controls">
+                    <button class="btn geolocation-btn" id="locationBtn">📍 Use My Location</button>
+                    <button class="btn" id="addFavoriteBtn" style="display: none;">⭐ Add to Favorites</button>
+                    <button class="theme-toggle" id="themeToggle">🌙</button>
+                </div>
+            </header>
+
+            <section class="weather-cards">
+                <div class="weather-card current-weather" id="currentWeather">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading weather data...
                     </div>
                 </div>
 
-                <div class="additional-data">
-                    <div class="uv-index">
-                        <div class="uv-icon">
-                            <i class="fas fa-sun"></i>
-                        </div>
-                        <div class="uv-info">
-                            <h3>UV Index</h3>
-                            <p id="uv-index">4.2 (Moderate)</p>
+                <div class="forecast-container">
+                    <div class="forecast-tabs">
+                        <button class="tab-btn active" data-tab="hourly">Hourly</button>
+                        <button class="tab-btn" data-tab="daily">7-Day Forecast</button>
+                        <button class="tab-btn" data-tab="charts">Temperature Trends</button>
+                    </div>
+
+                    <div class="forecast-content active" id="hourlyTab">
+                        <div class="hourly-forecast" id="hourlyForecast">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading forecast...
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="visibility">
-                        <div class="visibility-icon">
-                            <i class="fas fa-eye"></i>
+
+                    <div class="forecast-content" id="dailyTab">
+                        <div class="daily-forecast" id="dailyForecast">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading forecast...
+                            </div>
                         </div>
-                        <div class="visibility-info">
-                            <h3>Visibility</h3>
-                            <p id="visibility">10 km</p>
+                    </div>
+
+                    <div class="forecast-content" id="chartsTab">
+                        <div class="chart-container">
+                            <canvas id="temperatureChart"></canvas>
                         </div>
                     </div>
                 </div>
-                
-                <div class="aqi-indicator">
-                    <div class="aqi-value aqi-good" id="aqi">42</div>
-                    <div class="aqi-info">
-                        <h3>Air Quality Index</h3>
-                        <p id="aqi-status">Good - Air quality is satisfactory</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card forecast-container">
-                <div class="section-title">
-                    <i class="fas fa-chart-line"></i>
-                    <span>24-Hour Temperature Forecast</span>
-                </div>
-                
-                <div class="chart-container">
-                    <canvas id="temperature-chart"></canvas>
-                </div>
-                
-                <div class="section-title" style="margin-top: 30px;">
-                    <i class="fas fa-clock"></i>
-                    <span>Hourly Forecast</span>
-                </div>
-                
-                <div class="hourly-forecast" id="hourly-forecast">
-                    <!-- Hourly forecast items will be added here -->
-                </div>
-            </div>
-        </div>
-        
-        <footer>
-            <p>Professional Weather Dashboard &copy; 2024 | Real-time Data Powered by OpenWeatherMap API</p>
-        </footer>
+            </section>
+        </main>
     </div>
-    
-    <div class="notification" id="welcome-notification">
-        <i class="fas fa-info-circle"></i>
-        <div class="notification-content">
-            <p>Welcome to the Professional Weather Dashboard!</p>
-            <p>Get real-time weather updates and forecasts for any location worldwide.</p>
-            <button id="close-notification">Got it!</button>
-        </div>
-    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
